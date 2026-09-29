@@ -29,6 +29,7 @@ export class Home {
   private readonly shortcuts: Shortcut[] = [
     { label: 'Placas buscadas', description: 'Listado que validan la app y el monitor', path: '/plates', icon: 'directions_car', roles: ['admin'] },
     { label: 'Detecciones', description: 'Vehículos del listado identificados', path: '/plates/detections', icon: 'notifications_active', roles: ['admin'] },
+    { label: 'Lecturas por día', description: 'Placas leídas por cada cámara y operario', path: '/plates/readings', icon: 'videocam', roles: ['admin'] },
     { label: 'Historial de placas', description: 'Dónde se ha visto cada placa', path: '/plates/sightings', icon: 'manage_search', roles: ['admin'] },
   ];
 

@@ -90,6 +90,22 @@ export class DataService {
     return items;
   }
 
+  /** Lecturas de un día (YYYY-MM-DD, hora de Colombia), más recientes primero */
+  async sightingsByDay(day: string, limit = 5000){
+    const items: any[] = [];
+    let nextToken: string | null | undefined = null;
+    do {
+      const { data, nextToken: token, errors }: any = await client.models.PlateSighting.listSightingsByDay(
+        { day },
+        { sortDirection: 'DESC', limit: Math.min(limit - items.length, 1000), nextToken, authMode: 'userPool' }
+      );
+      if (errors?.length) throw errors;
+      items.push(...(data || []));
+      nextToken = token;
+    } while (nextToken && items.length < limit);
+    return items;
+  }
+
   /** Suscripción en tiempo real a los registros creados */
   onCreate(type: IModels){
     return this.getClient(type).onCreate({ authMode: this.authMode(type) });

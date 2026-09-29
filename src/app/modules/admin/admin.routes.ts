@@ -25,6 +25,10 @@ export const routes: Routes = [
                         loadComponent: () => import('./views/plates/detections/detections').then(m => m.Detections)
                     },
                     {
+                        path: 'readings',
+                        loadComponent: () => import('./views/plates/readings/readings').then(m => m.Readings)
+                    },
+                    {
                         path: 'sightings',
                         loadComponent: () => import('./views/plates/sightings/sightings').then(m => m.Sightings)
                     }

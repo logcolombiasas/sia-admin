@@ -9,10 +9,11 @@
     flex-direction: column;
     padding: 16px 20px;
     border-radius: 12px;
-    background: #f4f6f9;
+    background: #ffffff;
+    border: 1px solid #ececee;
     border-left: 4px solid #6c757d;
 
-    &--active { border-left-color: #198754; }
+    &--active { border-left-color: #ED1C24; }
     &--inactive { border-left-color: #adb5bd; }
 
     &__value { font-size: 28px; font-weight: 700; line-height: 1.1; }
@@ -33,4 +34,19 @@
     white-space: nowrap;
 
     &--inactive { opacity: .45; }
+}
+
+.stat--button {
+    text-align: left;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    transition: box-shadow .15s ease, border-color .15s ease;
+
+    &:hover { box-shadow: 0 4px 12px rgba(0, 0, 0, .08); }
+}
+
+.stat--selected {
+    border-color: #ED1C24;
+    box-shadow: 0 0 0 2px rgba(237, 28, 36, .25);
 }

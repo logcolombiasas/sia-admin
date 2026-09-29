@@ -20,6 +20,7 @@ export function request(ctx) {
         __typename: 'PlateSighting',
         plate: check.plate,
         seenAt: now,
+        day: util.time.nowFormatted('yyyy-MM-dd', 'America/Bogota'),
         wanted: check.found,
         wantedPlateId: check.id,
         latitude: args.latitude,

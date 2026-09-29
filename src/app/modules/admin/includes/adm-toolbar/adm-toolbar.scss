@@ -1,31 +1,38 @@
-/* Toolbar */
-.app-toolbar {
-    height: 100%;
-    width: 100%;
+/* Barra superior SIA: blanca, 64 px, logo a color y línea roja de acento */
+:host {
+    display: block;
     position: sticky;
     top: 0;
     z-index: 100;
-    backdrop-filter: saturate(1.2) blur(6px);
-    --mat-toolbar-container-background-color: var(--brand-toolbar-bg, #050707);
+}
+
+.app-toolbar {
+    height: 64px;
+    min-height: 64px;
+    width: 100%;
+    --mat-toolbar-container-background-color: #ffffff;
+    --mat-toolbar-container-text-color: var(--brand-black, #050707);
     border-bottom: 3px solid var(--brand-primary, #ED1C24);
-    --mat-toolbar-container-text-color: #fff;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, .12);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
 
     .brand {
-        gap: .6rem;
+        gap: .75rem;
         color: inherit;
 
         &__logo {
-            height: 44px;
+            height: 42px;
             width: auto;
             display: block;
         }
 
         &__name {
+            padding-left: .75rem;
+            border-left: 2px solid #e5e7eb;
+            font-size: 14px;
             font-weight: 700;
             letter-spacing: 3px;
             text-transform: uppercase;
-            color: #A7A9AC;
+            color: var(--brand-gray, #A7A9AC);
         }
     }
 
@@ -33,9 +40,7 @@
         flex: 1 1 auto;
     }
 
-    .top-search {
-        --mat-form-field-container-vertical-padding: 8px;
-        min-width: 320px;
-        margin-right: .5rem;
+    .action mat-icon {
+        color: #374151;
     }
 }

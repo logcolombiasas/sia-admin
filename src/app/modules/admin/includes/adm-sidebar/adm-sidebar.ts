@@ -70,6 +70,12 @@ export class AdmSidebar {
       roles: ['admin']
     },
     {
+      label: 'Lecturas por día',
+      path: '/plates/readings',
+      icon: 'videocam',
+      roles: ['admin']
+    },
+    {
       label: 'Historial de placas',
       path: '/plates/sightings',
       icon: 'manage_search',

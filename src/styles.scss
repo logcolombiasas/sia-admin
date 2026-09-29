@@ -15,6 +15,22 @@ html {
     typography: Roboto,
     density: 0,
   ));
+
+  /* Superficies neutras (el rojo de SIA queda solo como acento, sin teñir fondos) */
+  --mat-sys-surface: #ffffff;
+  --mat-sys-surface-bright: #ffffff;
+  --mat-sys-surface-container-lowest: #ffffff;
+  --mat-sys-surface-container-low: #f7f7f8;
+  --mat-sys-surface-container: #f2f2f3;
+  --mat-sys-surface-container-high: #ececee;
+  --mat-sys-surface-container-highest: #e6e6e8;
+  --mat-sys-surface-variant: #ececee;
+  --mat-sys-on-surface-variant: #4b5563;
+  --mat-sys-outline-variant: #d9d9dc;
+  --mat-sys-secondary-container: #fde8e9;
+  --mat-sys-on-secondary-container: #7f1015;
+  --mat-sidenav-container-shape: 0;
+  --mat-table-background-color: #ffffff;
 }
 
 body {

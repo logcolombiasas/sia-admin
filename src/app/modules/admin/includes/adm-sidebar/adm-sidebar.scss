@@ -1,12 +1,13 @@
 /* Layout */
 .shell-container {
-    height: calc(100dvh - 64px);
-    background: #f6f8fb;
+    height: calc(100dvh - 67px); /* 64 px de barra + 3 px de línea roja */
+    background: #f5f5f6;
 }
 
 .app-sidenav {
-    width: 260px;
-    border-right: 1px solid rgba(15, 43, 76, .08);
+    width: 250px;
+    border-right: 1px solid #ececee;
+    --mat-sidenav-container-background-color: #ffffff;
 
     .sidenav__header {
         display: flex;
@@ -21,8 +22,11 @@
     }
 
     a.active {
-        background: color-mix(in oklab, var(--brand-primary, #ED1C24) 12%, white);
+        background: color-mix(in oklab, var(--brand-primary, #ED1C24) 9%, white);
         color: var(--brand-primary, #ED1C24);
+        box-shadow: inset 4px 0 0 var(--brand-primary, #ED1C24);
+
+        mat-icon { color: var(--brand-primary, #ED1C24); }
     }
 }
 

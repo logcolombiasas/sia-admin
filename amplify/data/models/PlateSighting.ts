@@ -22,9 +22,12 @@ export const PlateSightingModel = {
         sourceType: a.string(),
         sourceName: a.string(),
         rawText: a.string(),
+        /** Fecha local de Colombia (YYYY-MM-DD) para consultar las lecturas de un día */
+        day: a.string(),
     })
     .secondaryIndexes((index) => [
-        index('plate').sortKeys(['seenAt']).name('byPlateAndDate').queryField('listSightingsByPlate')
+        index('plate').sortKeys(['seenAt']).name('byPlateAndDate').queryField('listSightingsByPlate'),
+        index('day').sortKeys(['seenAt']).name('byDayAndDate').queryField('listSightingsByDay')
     ])
     .authorization((allow) => [allow.groups(['admin']).to(['read', 'delete'])]),
 }
