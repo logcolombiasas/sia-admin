@@ -26,6 +26,8 @@ export function request(ctx) {
         latitude: args.latitude,
         longitude: args.longitude,
         locationName: args.locationName,
+        address: args.address,
+        accuracy: args.accuracy,
         sourceType: args.sourceType || 'movil',
         sourceName: args.sourceName || claims.email || identity.username,
         rawText: args.rawText,

@@ -19,6 +19,10 @@ export const PlateSightingModel = {
         latitude: a.float(),
         longitude: a.float(),
         locationName: a.string(),
+        /** Dirección aproximada (geocodificación inversa en la app o la configurada en la cámara) */
+        address: a.string(),
+        /** Precisión del GPS en metros (lecturas desde el celular) */
+        accuracy: a.float(),
         sourceType: a.string(),
         sourceName: a.string(),
         rawText: a.string(),

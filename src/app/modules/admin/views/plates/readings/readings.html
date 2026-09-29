@@ -51,7 +51,12 @@
             Solo placas del listado
         </mat-slide-toggle>
         <span class="text-muted">{{ filtered().length }} lecturas · {{ uniquePlates() }} placas distintas</span>
+        <mat-slide-toggle [(ngModel)]="showMap">Ver en mapa</mat-slide-toggle>
     </div>
+
+    @if(showMap){
+    <log-sightings-map class="mb-3" [points]="points()" [height]="420"></log-sightings-map>
+    }
 
     <div class="mw-100 overflow-auto">
         <table mat-table [dataSource]="filtered()">
@@ -72,8 +77,17 @@
                 <td mat-cell *matCellDef="let row">{{ row.sourceType === 'fija' ? '📹' : '📱' }} {{ row.sourceName }}</td>
             </ng-container>
             <ng-container matColumnDef="place">
-                <th mat-header-cell *matHeaderCellDef> Lugar </th>
-                <td mat-cell *matCellDef="let row">{{ row.locationName || '—' }}</td>
+                <th mat-header-cell *matHeaderCellDef> Ubicación </th>
+                <td mat-cell *matCellDef="let row">
+                    @if(row.locationName){ <div>{{ row.locationName }}</div> }
+                    <div>{{ row.address || (row.latitude == null ? 'Sin ubicación' : '') }}</div>
+                    @if(row.latitude != null){
+                    <small class="text-muted">
+                        {{ row.latitude | number:'1.6-6' }}, {{ row.longitude | number:'1.6-6' }}
+                        @if(row.accuracy){ · ±{{ row.accuracy | number:'1.0-0' }} m }
+                    </small>
+                    }
+                </td>
             </ng-container>
             <ng-container matColumnDef="wanted">
                 <th mat-header-cell *matHeaderCellDef> En listado </th>

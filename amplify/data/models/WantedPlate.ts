@@ -62,6 +62,8 @@ export const WantedPlateModel = {
             latitude: a.float(),
             longitude: a.float(),
             locationName: a.string(),
+            address: a.string(),
+            accuracy: a.float(),
             sourceType: a.string(),
             sourceName: a.string(),
             rawText: a.string(),

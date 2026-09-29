@@ -11,7 +11,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../../../../services/data/data.service';
 import { formatPlate, isValidPlate, normalizePlate } from '../../../../../utils/plate';
-import { summarizeSectors, SectorSummary } from './sectors';
+import { SightingsMap, MapPoint } from '../../../../../shared/sightings-map/sightings-map';
+import { describeLocation, summarizeSectors, SectorSummary } from './sectors';
 
 @Component({
   selector: 'log-sightings',
@@ -25,6 +26,7 @@ import { summarizeSectors, SectorSummary } from './sectors';
     MatTableModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
+    SightingsMap,
   ],
   templateUrl: './sightings.html',
   styleUrl: '../plates.scss'
@@ -42,8 +44,10 @@ export class Sightings {
   sightings = signal<any[]>([]);
   sectors = signal<SectorSummary[]>([]);
   wanted = signal<any | null>(null);
-  displayedColumns = ['seenAt', 'place', 'source', 'wanted', 'map'];
+  displayedColumns = ['seenAt', 'place', 'address', 'source', 'wanted', 'map'];
   formatPlate = formatPlate;
+  describeLocation = describeLocation;
+  points = signal<MapPoint[]>([]);
 
   constructor() {
     this._route.queryParamMap.subscribe(params => {
@@ -75,12 +79,23 @@ export class Sightings {
       ]);
       this.sightings.set(sightings);
       this.sectors.set(summarizeSectors(sightings));
+      this.points.set(sightings
+        .filter((s: any) => s.latitude != null && s.longitude != null)
+        .map((s: any) => ({
+          latitude: s.latitude,
+          longitude: s.longitude,
+          accuracy: s.accuracy,
+          highlight: !!s.wanted,
+          title: `${formatPlate(s.plate)} · ${new Date(s.seenAt).toLocaleString('es-CO')}`,
+          lines: [s.locationName, s.address, `${s.sourceType === 'fija' ? 'Cámara' : 'Operario'}: ${s.sourceName || '—'}`],
+        })));
       this.wanted.set(check?.data?.found ? check.data : null);
     } catch (error) {
       console.log(error);
       this.error.set('No fue posible consultar el historial');
       this.sightings.set([]);
       this.sectors.set([]);
+      this.points.set([]);
     }
     this.loading.set(false);
   }

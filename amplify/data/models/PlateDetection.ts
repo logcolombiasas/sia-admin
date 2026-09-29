@@ -15,6 +15,8 @@ export const PlateDetectionModel = {
         latitude: a.float(),
         longitude: a.float(),
         locationName: a.string(),
+        address: a.string(),
+        accuracy: a.float(),
         sourceType: a.string(),
         detectedBy: a.string(),
         detectedAt: a.datetime(),

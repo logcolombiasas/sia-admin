@@ -14,6 +14,7 @@ import { RouterModule } from '@angular/router';
 import { DataService } from '../../../../../services/data/data.service';
 import { formatPlate } from '../../../../../utils/plate';
 import { sourceKey, summarizeSources } from './sources';
+import { SightingsMap, MapPoint } from '../../../../../shared/sightings-map/sightings-map';
 
 function todayInBogota(): string {
   return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Bogota' }).format(new Date());
@@ -28,6 +29,7 @@ function todayInBogota(): string {
   imports: [
     CommonModule, FormsModule, RouterModule, MatButtonModule, MatButtonToggleModule, MatFormFieldModule,
     MatIconModule, MatInputModule, MatProgressSpinnerModule, MatSlideToggleModule, MatTableModule, MatTooltipModule,
+    SightingsMap,
   ],
   templateUrl: './readings.html',
   styleUrl: '../plates.scss'
@@ -50,6 +52,17 @@ export class Readings implements OnDestroy {
   filtered = computed(() => this.sightings().filter(s =>
     (!this.selected() || sourceKey(s) === this.selected()) && (!this.onlyWanted() || s.wanted)));
   uniquePlates = computed(() => new Set(this.filtered().map(s => s.plate)).size);
+  showMap = false;
+  points = computed<MapPoint[]>(() => this.filtered()
+    .filter(s => s.latitude != null && s.longitude != null)
+    .map(s => ({
+      latitude: s.latitude,
+      longitude: s.longitude,
+      accuracy: s.accuracy,
+      highlight: !!s.wanted,
+      title: `${formatPlate(s.plate)} · ${new Date(s.seenAt).toLocaleTimeString('es-CO')}`,
+      lines: [s.locationName, s.address, `${s.sourceType === 'fija' ? 'Cámara' : 'Operario'}: ${s.sourceName || '—'}`],
+    })));
 
   private timer = setInterval(() => {
     if (this.autoRefresh && this.day === todayInBogota() && !this.loading()) this.load(true);
