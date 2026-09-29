@@ -1,0 +1,12 @@
+<!-- Sin registro público: los usuarios los crea el administrador en Cognito -->
+<amplify-authenticator [hideSignUp]="true">
+    <ng-template amplifySlot="header">
+        <div class="d-flex justify-content-center my-3 mt-5">
+            <img alt="SIA - Servicios Integrados Automotriz" src="/images/logo.png" style="max-width: 280px; width: 80%;" />
+        </div>
+    </ng-template>
+    <ng-template amplifySlot="authenticated" let-user="user" let-signOut="signOut">
+        <log-adm-toolbar [signOut]="signOut" (toggleSidenav$)="toggleSidenav$.emit()"></log-adm-toolbar>
+        <log-adm-sidebar [toggleSidenav$]="toggleSidenav$"></log-adm-sidebar>
+    </ng-template>
+</amplify-authenticator>

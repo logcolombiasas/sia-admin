@@ -1,0 +1,41 @@
+/* Toolbar */
+.app-toolbar {
+    height: 100%;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: saturate(1.2) blur(6px);
+    --mat-toolbar-container-background-color: var(--brand-toolbar-bg, #050707);
+    border-bottom: 3px solid var(--brand-primary, #ED1C24);
+    --mat-toolbar-container-text-color: #fff;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, .12);
+
+    .brand {
+        gap: .6rem;
+        color: inherit;
+
+        &__logo {
+            height: 44px;
+            width: auto;
+            display: block;
+        }
+
+        &__name {
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #A7A9AC;
+        }
+    }
+
+    .spacer {
+        flex: 1 1 auto;
+    }
+
+    .top-search {
+        --mat-form-field-container-vertical-padding: 8px;
+        min-width: 320px;
+        margin-right: .5rem;
+    }
+}

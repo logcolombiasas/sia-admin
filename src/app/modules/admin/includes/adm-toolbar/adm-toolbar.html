@@ -1,0 +1,29 @@
+<mat-toolbar class="app-toolbar p-2 px-4">
+    <button class="d-md-none" mat-icon-button aria-label="Abrir menú" (click)="toggleSidenav$.emit()">
+        <mat-icon class="text-white">menu</mat-icon>
+    </button>
+
+    <a routerLink="/" class="brand d-inline-flex align-items-center text-decoration-none" aria-label="Inicio">
+        <img src="/images/logo_dark.png" alt="SIA - Servicios Integrados Automotriz" class="brand__logo" />
+        <span class="brand__name d-none d-md-inline">Placas</span>
+    </a>
+
+    <span class="spacer"></span>
+
+    <button mat-icon-button matBadge="{{ notifications() || null }}" matBadgeColor="warn" aria-label="Notificaciones"
+        [matTooltip]="notifications() ? notifications() + ' placas del listado detectadas' : 'Sin alertas nuevas'"
+        (click)="openAlerts()">
+        <mat-icon class="text-white">notifications</mat-icon>
+    </button>
+
+    <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="Menú de usuario">
+        <mat-icon class="text-white">account_circle</mat-icon>
+    </button>
+    <mat-menu #userMenu="matMenu">
+        <div class="px-3 py-2 small text-muted">{{ email() }}</div>
+        <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Cerrar sesión</span>
+        </button>
+    </mat-menu>
+</mat-toolbar>

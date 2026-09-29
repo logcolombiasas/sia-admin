@@ -1,0 +1,48 @@
+<mat-sidenav-container class="shell-container">
+    <mat-sidenav class="app-sidenav" [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="sidenavOpened()"
+        role="navigation">
+        <div class="sidenav__header d-md-none">
+            <img width="120" class="me-2" src="/images/logo.png" alt="SIA" />
+            <span>SIA · Placas</span>
+        </div>
+
+        <mat-nav-list>
+            @for(n of nav; track n){
+                <ng-container *hasRole="n.roles">
+                    @if(!n.menu){
+                        <a mat-list-item [routerLink]="n.path" routerLinkActive="active"
+                            [routerLinkActiveOptions]="{exact: true}" [attr.aria-label]="n.label" >
+                            @if(n.iconImage){
+                                <img width="30" class="me-2" [src]="n.icon" alt="">
+                            } @else {
+                                <mat-icon matListItemIcon>{{ n.icon }}</mat-icon>
+                            }
+                            <span matListItemTitle>{{ n.label }}</span>
+                        </a>
+                    } @else {
+                        <a mat-list-item [attr.aria-label]="n.label" [matMenuTriggerFor]="menu">
+                            <mat-icon matListItemIcon>{{ n.icon }}</mat-icon>
+                            <span matListItemTitle>{{ n.label }}</span>
+                        </a>
+                        <mat-menu #menu="matMenu" xPosition="before">
+                            @for(item of n.menu; track item){
+                                <a [routerLink]="item.path" mat-menu-item [attr.aria-label]="item.label" >
+                                    @if(item.iconImage){
+                                        <img width="30" class="me-2" [src]="item.icon" alt="">
+                                    } @else {
+                                        <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+                                    }
+                                    <span matListItemTitle>{{ item.label }}</span>
+                                </a>
+                            }
+                        </mat-menu>
+                    }
+                </ng-container>
+            }
+        </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="content">
+        <router-outlet />
+    </mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,0 +1,55 @@
+<div class="p-3 p-md-5">
+    <div class="mb-4">
+        <h1 class="m-0">{{ greeting() }} 👋</h1>
+        <p class="text-muted m-0">{{ email() }}</p>
+    </div>
+
+    @if(loading()){
+    <mat-spinner diameter="36"></mat-spinner>
+    }
+
+    @if(kpis().length){
+    <div class="kpis mb-4">
+        @for(kpi of kpis(); track kpi.label){
+        <a class="kpi kpi--{{ kpi.tone }}" [routerLink]="kpi.path">
+            <mat-icon class="kpi__icon">{{ kpi.icon }}</mat-icon>
+            <span class="kpi__value">{{ kpi.value }}</span>
+            <span class="kpi__label">{{ kpi.label }}</span>
+        </a>
+        }
+    </div>
+    }
+
+    <h2 class="h5 mb-3">Accesos rápidos</h2>
+    <div class="shortcuts mb-4">
+        @for(s of visibleShortcuts(); track s.path){
+        <a class="shortcut" [routerLink]="s.path">
+            <mat-icon>{{ s.icon }}</mat-icon>
+            <div>
+                <div class="shortcut__title">{{ s.label }}</div>
+                <small class="text-muted">{{ s.description }}</small>
+            </div>
+        </a>
+        } @empty {
+        @if(!loading()){
+        <p class="text-muted">
+            Este panel es solo para administradores. Los operarios usan la app móvil SIA Placas y las
+            cuentas de cámara el programa SIA Monitor.
+        </p>
+        }
+        }
+    </div>
+
+    @if(recentDetections().length){
+    <h2 class="h5 mb-3">Últimas detecciones</h2>
+    <div class="detections">
+        @for(d of recentDetections(); track d.id){
+        <a class="detection" routerLink="/plates/detections">
+            <span class="plate-badge">{{ formatPlate(d.plate) }}</span>
+            <span class="flex-grow-1">{{ d.detectedBy }}</span>
+            <small class="text-muted">{{ (d.detectedAt || d.createdAt) | date:'yyyy-MM-dd HH:mm' }}</small>
+        </a>
+        }
+    </div>
+    }
+</div>

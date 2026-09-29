@@ -1,0 +1,36 @@
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 20px;
+    border-radius: 12px;
+    background: #f4f6f9;
+    border-left: 4px solid #6c757d;
+
+    &--active { border-left-color: #198754; }
+    &--inactive { border-left-color: #adb5bd; }
+
+    &__value { font-size: 28px; font-weight: 700; line-height: 1.1; }
+    &__label { font-size: 13px; color: #6c757d; }
+}
+
+.plate-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border: 2px solid #212529;
+    border-radius: 6px;
+    background: #ffd400;
+    color: #212529;
+    font-family: monospace;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    white-space: nowrap;
+
+    &--inactive { opacity: .45; }
+}

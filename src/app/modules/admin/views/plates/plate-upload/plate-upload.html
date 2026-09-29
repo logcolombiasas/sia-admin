@@ -1,0 +1,96 @@
+<h2 mat-dialog-title>Cargar listado de placas</h2>
+<mat-dialog-content>
+    <p class="text-muted">
+        Sube un archivo Excel (.xlsx / .csv) con la columna <b>Placa</b> y opcionalmente Tipo, Marca, Línea, Color,
+        Modelo, Propietario, Motivo, Prioridad y Observaciones. Las placas que ya existen se actualizan.
+    </p>
+
+    <div class="d-flex align-items-center gap-3 mb-3">
+        <button matButton="tonal" type="button" (click)="file.click()" [disabled]="processing()">
+            <mat-icon>attach_file</mat-icon> Seleccionar archivo
+        </button>
+        <span>{{ fileName() }}</span>
+        <input #file hidden type="file" accept=".xlsx,.xls,.csv" (change)="onFileChange($event)" />
+    </div>
+
+    @if(rows().length){
+    <div class="d-flex flex-wrap gap-2 mb-3">
+        <span class="badge bg-success p-2">Nuevas: {{ summary().create }}</span>
+        <span class="badge bg-primary p-2">A actualizar: {{ summary().update }}</span>
+        <span class="badge bg-secondary p-2">Sin cambios: {{ summary().same }}</span>
+        <span class="badge bg-danger p-2">Con errores: {{ summary().invalid }}</span>
+    </div>
+
+    @if(toDeactivate().length){
+    <mat-checkbox [(ngModel)]="deactivateMissing" [disabled]="processing() || done()">
+        Desactivar las {{ toDeactivate().length }} placas activas que no vienen en este archivo
+        (el archivo reemplaza el listado vigente)
+    </mat-checkbox>
+    }
+
+    @if(issues().length){
+    <div class="alert alert-warning mt-3" style="max-height: 180px; overflow: auto;">
+        <b>Filas que no se cargarán:</b>
+        <ul class="mb-0">
+            @for(row of issues(); track row.line){
+            <li>Fila {{ row.line }}: {{ row.message }}</li>
+            }
+        </ul>
+    </div>
+    }
+
+    @if(pending().length && !done()){
+    <div class="mt-3" style="max-height: 260px; overflow: auto;">
+        <table class="table table-sm">
+            <thead>
+                <tr><th>Fila</th><th>Placa</th><th>Vehículo</th><th>Motivo</th><th>Acción</th></tr>
+            </thead>
+            <tbody>
+                @for(row of pending().slice(0, 200); track row.line){
+                <tr>
+                    <td>{{ row.line }}</td>
+                    <td><b>{{ formatPlate(row.body.plate) }}</b></td>
+                    <td>{{ row.body.brand }} {{ row.body.line }} {{ row.body.color }}</td>
+                    <td>{{ row.body.reason }}</td>
+                    <td>{{ row.action === 'create' ? 'Crear' : 'Actualizar' }}</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+        @if(pending().length > 200){
+        <small class="text-muted">... y {{ pending().length - 200 }} más</small>
+        }
+    </div>
+    }
+    }
+
+    @if(processing() || done()){
+    <div class="mt-3">
+        <mat-progress-bar mode="determinate" [value]="progress()"></mat-progress-bar>
+        <small>{{ progress() }}%</small>
+    </div>
+    }
+
+    @if(done()){
+    <div class="alert mt-3" [class.alert-success]="!errors().length" [class.alert-warning]="errors().length">
+        Carga finalizada. {{ errors().length ? errors().length + ' registros fallaron.' : 'Todos los registros se procesaron correctamente.' }}
+    </div>
+    }
+
+    @if(errors().length){
+    <div class="alert alert-danger" style="max-height: 150px; overflow: auto;">
+        @for(e of errors(); track $index){
+        <div>{{ e }}</div>
+        }
+    </div>
+    }
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button matButton type="button" (click)="close()" [disabled]="processing()">{{ done() ? 'Cerrar' : 'Cancelar' }}</button>
+    @if(!done()){
+    <button matButton="filled" type="button" (click)="upload()"
+        [disabled]="processing() || (!pending().length && !(deactivateMissing && toDeactivate().length))">
+        {{ processing() ? 'Cargando...' : 'Cargar ' + pending().length + ' placas' }}
+    </button>
+    }
+</mat-dialog-actions>

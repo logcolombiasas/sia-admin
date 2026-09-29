@@ -1,0 +1,42 @@
+/* Layout */
+.shell-container {
+    height: calc(100dvh - 64px);
+    background: #f6f8fb;
+}
+
+.app-sidenav {
+    width: 260px;
+    border-right: 1px solid rgba(15, 43, 76, .08);
+
+    .sidenav__header {
+        display: flex;
+        align-items: center;
+        gap: .6rem;
+        padding: 16px 16px 8px;
+        font-weight: 600;
+
+        img {
+            height: 40px;
+        }
+    }
+
+    a.active {
+        background: color-mix(in oklab, var(--brand-primary, #ED1C24) 12%, white);
+        color: var(--brand-primary, #ED1C24);
+    }
+}
+
+/* Responsive helpers */
+.hide-mobile {
+    display: none;
+}
+
+@media (min-width: 900px) {
+    .hide-mobile {
+        display: inline-flex;
+    }
+
+    .hide-desktop {
+        display: none;
+    }
+}

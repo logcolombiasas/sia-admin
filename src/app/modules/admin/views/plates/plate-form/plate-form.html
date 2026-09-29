@@ -1,0 +1,90 @@
+<h2 mat-dialog-title>{{ oldItem ? 'Editar' : 'Agregar' }} placa</h2>
+<form [formGroup]="itemForm" (ngSubmit)="submit()">
+    <mat-dialog-content>
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Placa</mat-label>
+                    <input matInput formControlName="plate" placeholder="ABC123" style="text-transform: uppercase;" />
+                    @if(itemForm.controls.plate.hasError('plate')){
+                    <mat-error>Placa inválida (5 a 7 letras/números)</mat-error>
+                    } @else if(nonStandard){
+                    <mat-hint>Formato no estándar (ABC123 / ABC12D)</mat-hint>
+                    }
+                </mat-form-field>
+            </div>
+            <div class="col-12 col-md-6">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Tipo de vehículo</mat-label>
+                    <mat-select formControlName="vehicleType">
+                        @for(t of vehicleTypes; track t){
+                        <mat-option [value]="t">{{ t }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-12 col-md-4">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Marca</mat-label>
+                    <input matInput formControlName="brand" />
+                </mat-form-field>
+            </div>
+            <div class="col-12 col-md-4">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Línea</mat-label>
+                    <input matInput formControlName="line" />
+                </mat-form-field>
+            </div>
+            <div class="col-6 col-md-2">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Modelo</mat-label>
+                    <input matInput formControlName="modelYear" />
+                </mat-form-field>
+            </div>
+            <div class="col-6 col-md-2">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Color</mat-label>
+                    <input matInput formControlName="color" />
+                </mat-form-field>
+            </div>
+            <div class="col-12 col-md-8">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Motivo</mat-label>
+                    <input matInput formControlName="reason" placeholder="Mora, hurto, orden de inmovilización..." />
+                </mat-form-field>
+            </div>
+            <div class="col-12 col-md-4">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Prioridad</mat-label>
+                    <mat-select formControlName="priority">
+                        @for(p of priorities; track p){
+                        <mat-option [value]="p">{{ p }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-12">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Propietario / Deudor</mat-label>
+                    <input matInput formControlName="owner" />
+                </mat-form-field>
+            </div>
+            <div class="col-12">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Observaciones</mat-label>
+                    <textarea matInput formControlName="notes" rows="2"></textarea>
+                </mat-form-field>
+            </div>
+            <div class="col-12">
+                <mat-slide-toggle formControlName="active">Activa (la app alertará esta placa)</mat-slide-toggle>
+            </div>
+        </div>
+        @if(error()){
+        <div class="alert alert-danger mt-3 mb-0">{{ error() }}</div>
+        }
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button type="button" matButton mat-dialog-close>Cancelar</button>
+        <button matButton="filled" [disabled]="!itemForm.valid || saving()">{{ saving() ? 'Guardando...' : 'Guardar' }}</button>
+    </mat-dialog-actions>
+</form>

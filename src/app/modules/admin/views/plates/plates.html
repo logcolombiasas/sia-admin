@@ -1,0 +1,169 @@
+<div class="p-3 p-md-5">
+    <div class="d-flex flex-wrap gap-3 mb-4 justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <h1 class="m-0">Placas buscadas</h1>
+            @if(loading()){
+            <div class="ms-2">
+                <mat-spinner diameter="30"></mat-spinner>
+            </div>
+            }
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            <button matButton="outlined" (click)="downloadTemplate()">
+                <mat-icon>download</mat-icon> Plantilla
+            </button>
+            <button matButton="outlined" (click)="exportExcel()" [disabled]="!dataSource.data.length">
+                <mat-icon>table_view</mat-icon> Exportar
+            </button>
+            <button matButton="tonal" (click)="openUpload()">
+                <mat-icon>upload_file</mat-icon> Cargar Excel
+            </button>
+            <button matButton="filled" (click)="openForm()">
+                <mat-icon>add</mat-icon> Agregar placa
+            </button>
+        </div>
+    </div>
+
+    @if(previouslySeen().length){
+    <div class="alert alert-warning d-flex gap-3 align-items-start">
+        <mat-icon>travel_explore</mat-icon>
+        <div class="flex-grow-1">
+            <b>{{ previouslySeen().length }} placa(s) que acabas de agregar ya habían sido vistas antes:</b>
+            <ul class="mb-0 mt-1">
+                @for(item of previouslySeen(); track item.plate){
+                <li>
+                    <a routerLink="/plates/sightings" [queryParams]="{ plate: item.plate }"><b>{{ formatPlate(item.plate) }}</b></a>
+                    · {{ item.count }} {{ item.count === 1 ? 'vez' : 'veces' }}
+                    · última: {{ item.last.locationName || item.last.sourceName }} el {{ item.last.seenAt | date:'yyyy-MM-dd HH:mm' }}
+                </li>
+                }
+            </ul>
+        </div>
+        <button matIconButton (click)="previouslySeen.set([])" aria-label="Cerrar">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    }
+
+    <div class="stats mb-4">
+        <div class="stat">
+            <span class="stat__value">{{ stats().total }}</span>
+            <span class="stat__label">Placas registradas</span>
+        </div>
+        <div class="stat stat--active">
+            <span class="stat__value">{{ stats().active }}</span>
+            <span class="stat__label">Activas (se alertan en la app)</span>
+        </div>
+        <div class="stat stat--inactive">
+            <span class="stat__value">{{ stats().inactive }}</span>
+            <span class="stat__label">Inactivas</span>
+        </div>
+    </div>
+
+    <div class="row">
+        <mat-form-field class="w-100">
+            <mat-chip-grid #chipGrid aria-label="Filtros">
+                @for(filter of filters; track filter){
+                <mat-chip-row [editable]="true" (edited)="edit(filter, $event)" (removed)="remove(filter)"
+                    [aria-description]="'press enter to edit '+ filter">
+                    <button matChipEdit [attr.aria-label]="'edit '+filter">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                    {{ filter }}
+                    <button matChipRemove [attr.aria-label]="'remove ' + filter">
+                        <mat-icon>cancel</mat-icon>
+                    </button>
+                </mat-chip-row>
+                }
+                <input placeholder="Buscar por placa, marca, color, motivo..." [matChipInputFor]="chipGrid"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+                    (matChipInputTokenEnd)="add($event)" />
+            </mat-chip-grid>
+        </mat-form-field>
+    </div>
+
+    <div class="row mw-100 overflow-auto">
+        <div class="px-3">
+            <table mat-table [dataSource]="dataSource" matSort>
+                <ng-container matColumnDef="plate">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Placa </th>
+                    <td mat-cell *matCellDef="let row">
+                        <span class="plate-badge" [class.plate-badge--inactive]="row.active === false">{{ formatPlate(row.plate) }}</span>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="vehicle">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header="brand"> Vehículo </th>
+                    <td mat-cell *matCellDef="let row">
+                        <div>{{ row.brand }} {{ row.line }} {{ row.modelYear }}</div>
+                        <small class="text-muted">{{ row.vehicleType }}</small>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="color">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Color </th>
+                    <td mat-cell *matCellDef="let row">{{ row.color }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="reason">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Motivo </th>
+                    <td mat-cell *matCellDef="let row">
+                        <div class="text-truncate" style="max-width: 220px;" [matTooltip]="row.notes || row.reason">{{ row.reason }}</div>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="priority">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Prioridad </th>
+                    <td mat-cell *matCellDef="let row">
+                        @if(row.priority){
+                        <span class="badge" [class.bg-danger]="row.priority === 'Alta'"
+                            [class.bg-warning]="row.priority === 'Media'"
+                            [class.bg-secondary]="row.priority !== 'Alta' && row.priority !== 'Media'">{{ row.priority }}</span>
+                        }
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="active">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Activa </th>
+                    <td mat-cell *matCellDef="let row">
+                        <mat-slide-toggle [checked]="row.active !== false" (change)="toggleActive(row)"
+                            [matTooltip]="row.active === false ? 'La app no alertará esta placa' : 'La app alertará esta placa'"></mat-slide-toggle>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="updatedAt">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Actualizada </th>
+                    <td mat-cell *matCellDef="let row">{{ row.updatedAt | date:'yyyy-MM-dd HH:mm' }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                    <td mat-cell *matCellDef="let row">
+                        <div class="d-flex">
+                            <a matIconButton routerLink="/plates/sightings" [queryParams]="{ plate: row.plate }"
+                                matTooltip="Historial: dónde se ha visto">
+                                <mat-icon>manage_search</mat-icon>
+                            </a>
+                            <button matIconButton (click)="openForm(row)" matTooltip="Editar">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button matIconButton (click)="delete(row)" matTooltip="Eliminar">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell p-4 text-center" [attr.colspan]="displayedColumns.length">
+                        @if(!loading()){ No hay placas para mostrar }
+                    </td>
+                </tr>
+            </table>
+
+            <mat-paginator [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+</div>
